@@ -14,7 +14,7 @@
   "homepage": "https://github.com/jeffandersen/node-express-sample",
   "dependencies": {
     "body-parser": "1.10.2",
-    "express": "4.11.1",
+    "express": "^4.11.1",
     "pg": "4.2.0"
   }
 }
