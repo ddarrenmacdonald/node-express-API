@@ -1,9 +1,12 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var expressValidator = require(‘express-validator’);
 
 var app = express();
 
 app.use(bodyParser.json({ type: 'application/json' }));
+// We add the middleware after we load the body parser
+app.use(expressValidator());
 
 var postgres = require('./lib/postgres');
 
