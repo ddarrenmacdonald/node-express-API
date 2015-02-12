@@ -2,7 +2,7 @@ var express = require('express');
 // Added in the Body Parser Middleware
 var bodyParser = require('body-parser');
 // Add in Express Validator
-var expressValidator = require(‘express-validator’);
+var expressValidator = require('express-validator');
 
 var app = express();
 // Adds functionality to parse json data
@@ -39,8 +39,8 @@ function lookupPhoto(req, res, next) {
 
 //Not sure where to put this Validation
 function validatePhoto(req, res, next) {
-  req.checkBody(‘description’, ‘Invalid description’).notEmpty();
-  req.checkBody(‘album_id’, ‘Invalid album_id’).isNumeric();
+  req.checkBody('description', 'Invalid description').notEmpty();
+  req.checkBody('album_id', 'Invalid album_id').isNumeric();
   var errors = req.validationErrors();
   if (errors) {
     var response = { errors: [] };
@@ -56,8 +56,50 @@ function validatePhoto(req, res, next) {
 // Create the router for Photos
 var photoRouter = express.Router();
 
-// Get request to root resource
-photoRouter.get('/', function(req, res) {});
+// Get request to root resource and add in Pagination
+photoRouter.get('/', function(req, res) {
+	var page = parseInt(req.query.page, 10);
+		if (isNaN(page) || page < 1) {
+		page = 1;
+	}
+
+	var limit = parseInt(req.query.limit, 10);
+	if (isNaN(limit)) {
+		limit = 10;
+	} else if (limit > 50) {
+		limit = 50;
+	} else if (limit < 1) {
+		limit = 1;
+	}
+
+  	var sql = 'SELECT count(1) FROM photo';
+  	postgres.client.query(sql, function(err, result) {
+    	if (err) {
+	      console.error(err);
+	      res.statusCode = 500;
+	      return res.json({
+	        errors: ['Could not retrieve photos']
+      });
+    }
+
+    var count = parseInt(result.rows[0].count, 10);
+    var offset = (page - 1) * limit;
+
+    sql = 'SELECT * FROM photo OFFSET $1 LIMIT $2';
+    postgres.client.query(sql, [offset, limit], function(err, result) {
+      if (err) {
+        console.error(err);
+        res.statusCode = 500;
+        return res.json({
+          errors: ['Could not retrieve photos']
+        });
+      }
+
+      return res.json(result.rows);
+    });
+  });
+
+});
 
 // Post request to root
 photoRouter.post('/', function(req, res) {
