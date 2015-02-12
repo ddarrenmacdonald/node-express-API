@@ -37,6 +37,22 @@ function lookupPhoto(req, res, next) {
 	});
 }
 
+//Not sure where to put this Validation
+function validatePhoto(req, res, next) {
+  req.checkBody(‘description’, ‘Invalid description’).notEmpty();
+  req.checkBody(‘album_id’, ‘Invalid album_id’).isNumeric();
+  var errors = req.validationErrors();
+  if (errors) {
+    var response = { errors: [] };
+    errors.forEach(function(err) {
+      response.errors.push(err.msg);
+    });
+    res.statusCode = 400;
+    return res.json(response);
+  }
+  return next();
+ }
+
 // Create the router for Photos
 var photoRouter = express.Router();
 
@@ -88,6 +104,8 @@ photoRouter.delete('/:id', function(req, res) {});
 
 // This attaches the router to a path
 app.use('/photo', photoRouter);
+
+
 
 /*
 //See comments above for the logic
