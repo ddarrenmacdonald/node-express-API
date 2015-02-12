@@ -30,9 +30,27 @@ photoRouter.post('/', function(req, res) {
 	      console.error(err);
 	      res.statusCode = 500;
 	      return res.json({
-	        errors: ['Could not create photo']
+	        errors: ['Failed to create photo']
 	      });
 	    }
+
+	var newPhotoId = result.rows[0].id;
+    var sql = 'SELECT * FROM photo WHERE id = $1';
+    postgres.client.query(sql, [ newPhotoId ], function(err, result) {
+      if (err) {
+        // We shield our clients from internal errors, but log them
+        console.error(err);
+        res.statusCode = 500;
+        return res.json({
+          errors: ['Could not retrieve photo after create']
+        });
+      }
+      // The request created a new resource object
+      res.statusCode = 201;
+      // The result of CREATE should be the same as GET
+      res.json(result.rows[0]);
+  });
+});
 
 // A GET to the root of a resource returns a list of that resource
 photoRouter.get('/', function(req, res) { });
