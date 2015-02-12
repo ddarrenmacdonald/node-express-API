@@ -1,10 +1,14 @@
 var express = require('express');
 // Added in the Body Parser Middleware
 var bodyParser = require('body-parser');
+// Add in Express Validator
+var expressValidator = require(‘express-validator’);
 
 var app = express();
 // Adds functionality to parse json data
 app.use(bodyParser.json({ type: 'application/json' }));
+// We add the middleware after we load the body parser
+app.use(expressValidator());
 
 // Add the postgres
 var postgres = require('./lib/postgres');
@@ -71,8 +75,8 @@ photoRouter.post('/', function(req, res) {
   });
 });
 
-// Request to get a specific object
-photoRouter.get('/:id', lookupPhoto, function(req, res) {
+// Request to get a specific object and added RegEx
+photoRouter.get('/:id([0-9]+)', lookupPhoto, function(req, res) {
 	res.json(req.photo);
 });
 
