@@ -3,6 +3,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 // Add in Express Validator
 var expressValidator = require('express-validator');
+// Add in the Multer middleware
+var multer = require('multer');
 
 var app = express();
 // Adds functionality to parse json data
@@ -116,7 +118,7 @@ photoRouter.get('/', function(req, res) {
 
 // Post request to root
 photoRouter.post('/', multer({
-	dest: './uploads/'
+	dest: './uploads/',
 	rename: function(field, filename) {
 		filename = filename.replace(/\W+/g, '-').toLowerCase();
 		return filename + '_' + Date.now();
@@ -127,7 +129,7 @@ photoRouter.post('/', multer({
 	}
 }), validatePhoto, function(req, res) {
 	var sql = 'INSERT INTO photo (description, filepath, album_id) VALUES ($1,$2,$3) RETURNING id';
-  var data = [
+  	var data = [
     req.body.description,
     req.body.filepath,
     req.body.album_id
