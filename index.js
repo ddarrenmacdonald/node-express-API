@@ -22,5 +22,14 @@ photoRouter.delete('/:id', function(request, response){});
 // This attaches the router to a path
 app.use('/photo', photoRouter);
 
+//See comments above for the logic
+var albumRouter = express.Router();
+albumRouter.get('/', function(request, response) {});
+albumRouter.post('/', function(request, response) {});
+albumRouter.get('/:id', function(request, response) {});
+albumRouter.patch('/:id', function(request, response) {});
+albumRouter.delete('/:id', function(request, response) {});
+app.use('/album, albumRouter');
+
 // Attached to Node Modules
 module.exports = app; 
