@@ -1,28 +1,26 @@
 var express = require('express');
 var app = express();
 
-//Declared a new express router for Photo path
+// Create the router for Photos
 var photoRouter = express.Router();
 
-//Used the "chaining" feature to refactor code
-photoRouter.get(‘/’, function(req, res) { });
-photoRouter.post(‘/’, function(req, res) { });
-photoRouter.get(‘/:id’, function(req, res) { });
-photoRouter.patch(‘/:id’, function(req, res) { });
-photoRouter.delete(‘/:id’, function(req, res) { });
-app.use(‘/photo’, photoRouter);
+// Get request to root resource
+photoRouter.get('/', function(request, response) {});
 
-//Declared a new express router for Album path
-var albumRouter = express.Router();
+// Post request to root
+photoRouter.post('/', function(request, response) {});
 
-//Used the "chaining" feature to refactor code
-photoRouter.get(‘/’, function(req, res) { });
-albumRouter.get(‘/’, function(req, res) { });
-albumRouter.post(‘/’, function(req, res) { });
-albumRouter.get(‘/:id’, function(req, res) { });
-albumRouter.patch(‘/:id’, function(req, res) { });
-albumRouter.delete(‘/:id’, function(req, res) { });
-app.use(‘/album’, albumRouter);
+// Request to get a specific object
+photoRouter.get('/:id', function(request, response) {});
 
-//Exported Node Module
-module.exports = app;
+// Adding a PATCH request to specific object
+photoRouter.patch('/:id', function(request, response) {});
+
+// Deletion of a specific object
+photoRouter.delete('/:id', function(request, response){});
+
+// This attaches the router to a path
+app.use('/photo', photoRouter);
+
+// Attached to Node Modules
+module.exports = app; 
