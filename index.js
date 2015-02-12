@@ -1,5 +1,11 @@
 var express = require('express');
+// Added in the Body Parser Middleware
+var bodyParser = require('body-parser');
+
 var app = express();
+// Adds functionality to parse json data
+app.use(bodyParser.json({ type: 'application/json' }));
+
 
 // Create the router for Photos
 var photoRouter = express.Router();
