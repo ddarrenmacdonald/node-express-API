@@ -7,10 +7,30 @@ app.use(bodyParser.json({ type: 'application/json' }));
 
 var postgres = require('./lib/postgres');
 
+function lookupPhoto(req, res, next) {
+  var photoId = req.params.id;
+
 
 // Create the express router object for Photos
 var photoRouter = express.Router();
+photoRouter.get('/', function(req, res) { });
+photoRouter.post('/', function(req, res) {
+	var sql = 'Insert into photo (description, filepath, album_id) VALEs ($1, $2, $3) RETURNING id';
+	var data = [
+    req.body.description,
+    req.body.filepath,
+    req.body.album_id
+  ];
 
+	postgres.client.query(sql, data, function(err, result) {
+	    if (err) {
+	      console.error(err);
+	      res.statusCode = 500;
+	      return res.json({
+	        errors: ['Could not create photo']
+	      });
+	    }
+	    
 // A GET to the root of a resource returns a list of that resource
 photoRouter.get('/', function(req, res) { });
 
