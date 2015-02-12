@@ -172,7 +172,12 @@ photoRouter.delete('/:id', function(req, res) {});
 // This attaches the router to a path
 app.use('/photo', photoRouter);
 
-
+// Add photo uploader
+var uploadRouter = express.Router();
+uploadRouter.get('/', function(req, res) {
+  res.render('form');
+});
+app.use('/upload', uploadRouter);
 
 /*
 //See comments above for the logic
