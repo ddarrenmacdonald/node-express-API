@@ -8,6 +8,7 @@ app.use(bodyParser.json({ type: 'application/json' }));
 var postgres = require('./lib/postgres');
 
 function lookupPhoto(req, res, next) {
+// We access the ID param on the request object
   var photoId = req.params.id;
 
 
@@ -15,6 +16,8 @@ function lookupPhoto(req, res, next) {
 var photoRouter = express.Router();
 photoRouter.get('/', function(req, res) { });
 photoRouter.post('/', function(req, res) {
+
+// Build an SQL query to select the resource object by ID
 	var sql = 'Insert into photo (description, filepath, album_id) VALEs ($1, $2, $3) RETURNING id';
 	var data = [
     req.body.description,
@@ -30,7 +33,7 @@ photoRouter.post('/', function(req, res) {
 	        errors: ['Could not create photo']
 	      });
 	    }
-	    
+
 // A GET to the root of a resource returns a list of that resource
 photoRouter.get('/', function(req, res) { });
 
@@ -38,7 +41,9 @@ photoRouter.get('/', function(req, res) { });
 photoRouter.post('/', function(req, res) { });
 
 // We specify a param in our path for the GET of a specific object
-photoRouter.get('/:id', function(req, res) { });
+photoRouter.get('/:id', function(req, res) {
+	res.json(req.photo);
+});
 
 // Similar to the GET on an object, to update it we can PATCH
 photoRouter.patch('/:id', function(req, res) { });
