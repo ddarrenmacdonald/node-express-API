@@ -37,8 +37,21 @@ function lookupPhoto(req, res, next) {
 	});
 }
 
-//Not sure where to put this Validation
+//Check the file size
 function validatePhoto(req, res, next) {
+  if (!req.files.photo) {
+    res.statusCode = 400;
+    return res.json({
+      errors: ['File failed to upload']
+    });
+  }
+  if (req.files.photo.truncated) {
+    res.statusCode = 400;
+    return res.json({
+      errors: ['File too large']
+    });
+  }
+
   req.checkBody('description', 'Invalid description').notEmpty();
   req.checkBody('album_id', 'Invalid album_id').isNumeric();
   var errors = req.validationErrors();
@@ -102,7 +115,17 @@ photoRouter.get('/', function(req, res) {
 });
 
 // Post request to root
-photoRouter.post('/', function(req, res) {
+photoRouter.post('/', multer({
+	dest: './uploads/'
+	rename: function(field, filename) {
+		filename = filename.replace(/\W+/g, '-').toLowerCase();
+		return filename + '_' + Date.now();
+	},
+	limits: {
+		files: 1,
+		fileSize: 2 * 1024 * 1024 // 2mb, in bytes
+	}
+}), validatePhoto, function(req, res) {
 	var sql = 'INSERT INTO photo (description, filepath, album_id) VALUES ($1,$2,$3) RETURNING id';
   var data = [
     req.body.description,
