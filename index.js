@@ -7,10 +7,15 @@ var expressValidator = require('express-validator');
 var multer = require('multer');
 
 var app = express();
+
 // Adds functionality to parse json data
 app.use(bodyParser.json({ type: 'application/json' }));
 // We add the middleware after we load the body parser
 app.use(expressValidator());
+
+// Adds views
+app.set('views', './views');
+app.set('view engine', 'ejs');
 
 // Add the postgres
 var postgres = require('./lib/postgres');
@@ -56,6 +61,8 @@ function validatePhoto(req, res, next) {
 
   req.checkBody('description', 'Invalid description').notEmpty();
   req.checkBody('album_id', 'Invalid album_id').isNumeric();
+  
+  //Checking for validation errors
   var errors = req.validationErrors();
   if (errors) {
     var response = { errors: [] };
@@ -131,7 +138,7 @@ photoRouter.post('/', multer({
 	var sql = 'INSERT INTO photo (description, filepath, album_id) VALUES ($1,$2,$3) RETURNING id';
   	var data = [
     req.body.description,
-    req.body.filepath,
+    req.body.photo.path,
     req.body.album_id
   ];
   postgres.client.query(sql, data, function(err, result) {
@@ -164,7 +171,7 @@ photoRouter.get('/:id([0-9]+)', lookupPhoto, function(req, res) {
 });
 
 // Adding a PATCH request to specific object
-photoRouter.patch('/:id', function(req, res) {});
+photoRouter.patch('/:id([0-9]+)', function(req, res) {});
 
 // Deletion of a specific object
 photoRouter.delete('/:id', function(req, res) {});
