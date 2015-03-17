@@ -1,11 +1,9 @@
-CREATE TABLE album (
-  id serial primary key,
-  description varchar(255)
-);
 
-CREATE TABLE photo (
+CREATE TABLE assessment (
   id serial primary key,
-  album_id integer,
-  description varchar(255),
-  filepath varchar(255)
+  fName varchar(80),
+  lName varchar(80),
+  eye varchar(80),
+  elbow varchar(80),
+  knee varchar(80),
 );
