@@ -1,2 +1,2 @@
 # node-express-API
-Clone of Jeff Andersen's Node Express Project
+This is an API development project using Node Express and follows the tutourial by Jeff Andersen.
